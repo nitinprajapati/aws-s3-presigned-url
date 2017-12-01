@@ -24,6 +24,22 @@ start your server by node index.js
 
 It hosted on [Heroku.com](https://aws-presigned-urls.herokuapp.com/)
 
+# Rest API
+
+```
+You can also use it as REST API
+
+RestAPI end point: https://aws-presigned-urls.herokuapp.com/GetSignedURL
+Input parameters are: 
+{
+  "bucket": "BUCKET_NAME",
+  "key": "KEY_NAME",
+  "region": "REGION_NAME",
+  "expiry" : "EXPIRY_IN_SECONDS",
+  "accessKey" : "ACCESS_KEY",
+  "secretKey" : "SECRET_KEY"
+}
+
 
 ## Authors
 
