@@ -1,6 +1,6 @@
 # aws-s3-presigned-url
 
-Get Amazon web services(AWS) S3 bucket presigned URL. By providing the Access Key, Secret Key, Bucket name, Key, Expiry time and resion name. It also uses HTML5 localstorage to save your recent data on browser.
+Get Amazon web services(AWS) S3 bucket presigned URL. By providing the Access Key, Secret Key, Bucket name, Key, Expiry time and region name. It also uses HTML5 localstorage to save your recent data on browser.
 
 ## Getting Started
 
