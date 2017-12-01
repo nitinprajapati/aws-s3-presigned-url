@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Get pre signed URL</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./../public/css/bootstrap.css" />
+  </head>
+  <body>
+      <div class="container">
+          <nav class="navbar navbar-fixed-top navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#headerDiv" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+          </div>
+        </div>
+        </nav>
+          <div class="form-horizontal" style="margin-top:100px;">
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="email">Bucket</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="bucket" placeholder="Enter bucket name" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="email">Key</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="key" placeholder="Enter key name" required />
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="email">Region</label>
+                <div class="col-sm-10">
+                    <select class="form-control" id="region">
+                        <option value="us-east-1">us-east-1</option>
+                        <option value="us-east-2">us-east-2</option>
+                        <option value="us-west-1">us-west-1</option>
+                        <option value="us-west-2">us-west-2</option>
+                        <option value="ca-central-1">ca-central-1</option>
+                        <option value="eu-west-1">eu-west-1</option>
+                        <option value="eu-central-1">eu-central-1</option>
+                        <option value="eu-west-2">eu-west-2</option>
+                        <option value="ap-northeast-1">ap-northeast-1</option>
+                        <option value="ap-northeast-2">ap-northeast-2</option>
+                        <option value="ap-southeast-1">ap-southeast-1</option>
+                        <option value="ap-southeast-2">ap-southeast-2</option>
+                        <option value="ap-south-1">ap-south-1</option>
+                        <option value="sa-east-1">sa-east-1</option>
+                      </select>
+                </div>
+            </div>
+            
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="email">Expiry</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="expiry" placeholder="Enter expiry time in seconds" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="email">Access Key</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="AccessKey" placeholder="Enter access key of the bucket" required />
+              </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="email">Secret Key</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="SecretKey" placeholder="Enter secret key of the bucket" required />
+            </div>
+        </div>
+
+            <div class="form-group">        
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-default" onclick="getPresignedURL()">Get Presigned URL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container" style="margin-top:100px;"> 
+          <div class="form-group">
+              <label class="control-label col-sm-2" for="email"></label>
+              <div class="col-sm-10">
+                <textarea type="text" class="form-control" id="presignedURL" readonly="readonly" style="width: 750px;height: 250px;resize: none;" ></textarea>
+              </div>
+          </div>
+
+          <div class="container">
+              <label class="control-label col-sm-4" for="email"></label>
+              <div class="col-sm-8" style="margin-top: 10px;">
+                  <button type="button" class="btn btn-default" onclick="copy()">Copy Presigned URL</button>
+              </div>
+          </div>
+        </div>        
+    <script src="./../public/js/jquery.js"></script>
+    <script>
+      var getPresignedURL = function (){
+        var bucket, key, region, expiry;
+        bucket  = $("#bucket").val().trim();
+        key     = $("#key").val().trim();
+        region  = $("#region").val().trim();
+        expiry  = $("#expiry").val().trim();
+        accessKey=$('#AccessKey').val();
+        secretKey=$('#SecretKey').val();
+        signedURl=$('#presignedURL').val();
+        var obj = {bucket: bucket, key: key, region: region, expiry: expiry, accessKey: accessKey, secretKey: secretKey, signedURl: signedURl};
+          $.ajax({
+            type: "POST",
+            url: "./../GetSignedURL",   
+            data: obj,
+            async: true,
+            statusCode: {
+                404: function() {
+                  alert( "page not found" );
+                }
+          },
+          success: function(data){
+            $('#presignedURL').html(data);
+            obj.signedURl = data;
+            storeData(obj);
+          }
+        });
+      };
+
+      var copy = function () {
+        var copyText = document.getElementById("presignedURL");
+        var success  = copyText.select();
+        document.execCommand("Copy");
+      }
+
+      var storeData =  function (obj){
+        if(window.localStorage){
+            var preSignedObj  = window.localStorage.setItem("preSignedObj", JSON.stringify(obj));
+        }
+      };
+
+      var rerieveData =  function (){
+        if(window.localStorage){
+            var preSignedObj  = JSON.parse(window.localStorage.getItem('preSignedObj'));
+            if(preSignedObj){
+              $('#bucket').val(preSignedObj.bucket);
+              $('#key').val(preSignedObj.key);
+              $('#region').val(preSignedObj.region);
+              $("#expiry").val(preSignedObj.expiry);
+              $('#AccessKey').val(preSignedObj.accessKey);
+              $('#SecretKey').val(preSignedObj.secretKey);
+              $('#presignedURL').html(preSignedObj.signedURl);
+            }
+        }
+        else{
+          console.log("Your browser does not support local storage.");
+        }
+      };
+      window.onload = rerieveData();
+
+    </script>
+  </body>
+</html>
