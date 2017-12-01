@@ -1,7 +1,7 @@
 var AWS = require('aws-sdk');
 const EXPRESS = require('express');
 const APP = EXPRESS();
-APP.listen(process.env.PORT);
+APP.listen(process.env.PORT || 10);
 var bodyParser = require('body-parser');
 APP.use(bodyParser.json()); // support json encoded bodies
 APP.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
